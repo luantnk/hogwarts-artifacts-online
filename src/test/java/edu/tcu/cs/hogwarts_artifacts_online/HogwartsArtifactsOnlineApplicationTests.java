@@ -1,4 +1,4 @@
-package edu.tcu.cs.hogwartsartifactsonline;
+package edu.tcu.cs.hogwarts_artifacts_online;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -6,8 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class HogwartsArtifactsOnlineApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }
