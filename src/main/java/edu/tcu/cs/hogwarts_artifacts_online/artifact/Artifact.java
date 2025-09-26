@@ -12,6 +12,7 @@ public class Artifact implements Serializable {
     private String id;
     private String name;
     private String imageUrl;
+    private String description;
 
     @ManyToOne
     private Wizard owner;
@@ -37,6 +38,22 @@ public class Artifact implements Serializable {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Wizard getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Wizard owner) {
+        this.owner = owner;
     }
 
     public void setImageUrl(String imageUrl) {
