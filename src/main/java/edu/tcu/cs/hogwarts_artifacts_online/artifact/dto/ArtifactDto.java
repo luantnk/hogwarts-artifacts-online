@@ -1,8 +1,9 @@
 package edu.tcu.cs.hogwarts_artifacts_online.artifact.dto;
 
 import edu.tcu.cs.hogwarts_artifacts_online.wizard.dto.WizardDto;
+import jakarta.validation.constraints.NotEmpty;
 
-public record ArtifactDto(String id, String name, String description, String imageUrl, WizardDto owner) {
+public record ArtifactDto( String id, @NotEmpty(message = "name is required") String name, @NotEmpty(message = "description is required") String description, @NotEmpty(message = "ImageUrl is required!") String imageUrl, WizardDto owner) {
 
 
 }

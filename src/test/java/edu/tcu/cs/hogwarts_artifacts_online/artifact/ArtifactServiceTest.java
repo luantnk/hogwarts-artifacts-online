@@ -1,5 +1,6 @@
 package edu.tcu.cs.hogwarts_artifacts_online.artifact;
 
+import edu.tcu.cs.hogwarts_artifacts_online.artifact.utils.IdWorker;
 import edu.tcu.cs.hogwarts_artifacts_online.wizard.Wizard;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.jupiter.api.AfterEach;
@@ -25,6 +26,10 @@ import static org.mockito.Mockito.verify;
 class ArtifactServiceTest {
     @Mock
     ArtifactRepository artifactRepository;
+
+    @Mock
+    IdWorker idWorker;
+
     @InjectMocks
     ArtifactService artifactService;
 
@@ -105,5 +110,26 @@ class ArtifactServiceTest {
         // Then
         assert(actualArtifacts.size() == this.artifacts.size());
         verify(artifactRepository, times(1)).findAll();
+    }
+    @Test
+    void testSaveSuccess() {
+        // Given
+        Artifact newArtifact = new Artifact();
+        newArtifact.setName("Artifact 3");
+        newArtifact.setDescription("Description...");
+        newArtifact.setImageUrl("ImageUrl...");
+
+        given(idWorker.nextId()).willReturn(123456L);
+        given(artifactRepository.save(newArtifact)).willReturn(newArtifact);
+
+
+        // When
+       Artifact savedArtifact = artifactService.save(newArtifact);
+        // Then
+        assertThat(savedArtifact.getId()).isEqualTo("123456");
+        assertThat(savedArtifact.getName()).isEqualTo(newArtifact.getName());
+        assertThat(savedArtifact.getDescription()).isEqualTo(newArtifact.getDescription());
+        assertThat(savedArtifact.getImageUrl()).isEqualTo(newArtifact.getImageUrl());
+        verify(artifactRepository, times(1)).save(newArtifact);
     }
 }
