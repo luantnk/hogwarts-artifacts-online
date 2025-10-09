@@ -1,5 +1,6 @@
 package edu.tcu.cs.hogwarts_artifacts_online.artifact;
 
+import edu.tcu.cs.hogwarts_artifacts_online.artifact.utils.IdWorker;
 import edu.tcu.cs.hogwarts_artifacts_online.wizard.Wizard;
 import net.bytebuddy.implementation.bytecode.Throw;
 import org.junit.jupiter.api.AfterEach;
@@ -13,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
@@ -23,11 +26,34 @@ import static org.mockito.Mockito.verify;
 class ArtifactServiceTest {
     @Mock
     ArtifactRepository artifactRepository;
+
+    @Mock
+    IdWorker idWorker;
+
     @InjectMocks
     ArtifactService artifactService;
 
+    List<Artifact> artifacts;
+
     @BeforeEach
     void setUp() {
+        Artifact a1 = new Artifact();
+        a1.setId("1250808601744904191");
+        a1.setName("Deluminator");
+        a1.setDescription("A Deluminator is a device invented by Albus Dumbledore that resembles a cigarette lighter. It is used to remove or absorb (as well as return) the light from any light source to provide cover to the user.");
+        a1.setImageUrl("imageUrl");
+
+        Artifact a2 = new Artifact();
+        a2.setId("1250808601744904192");
+        a2.setName("Invisibility Cloak");
+        a2.setDescription("An invisibility cloak is used to make the wearer invisible.");
+        a2.setImageUrl("imageUrl");
+
+        this.artifacts = new ArrayList<>();
+        this.artifacts.add(a1);
+        this.artifacts.add(a2);
+
+
     }
 
     @AfterEach
@@ -73,5 +99,37 @@ class ArtifactServiceTest {
         // Then
         assertThat(thrown).isInstanceOf(ArtifactNotFoundException.class).hasMessage("Could not find artifact with Id 1250808601744904192 :(");
         verify(artifactRepository, times(1)).findById("1250808601744904192");
+    }
+
+    @Test
+    void testFindAllSuccess() {
+        // Given
+        given(artifactRepository.findAll()).willReturn(this.artifacts);
+        // When
+        List<Artifact> actualArtifacts = artifactService.findAll();
+        // Then
+        assert(actualArtifacts.size() == this.artifacts.size());
+        verify(artifactRepository, times(1)).findAll();
+    }
+    @Test
+    void testSaveSuccess() {
+        // Given
+        Artifact newArtifact = new Artifact();
+        newArtifact.setName("Artifact 3");
+        newArtifact.setDescription("Description...");
+        newArtifact.setImageUrl("ImageUrl...");
+
+        given(idWorker.nextId()).willReturn(123456L);
+        given(artifactRepository.save(newArtifact)).willReturn(newArtifact);
+
+
+        // When
+       Artifact savedArtifact = artifactService.save(newArtifact);
+        // Then
+        assertThat(savedArtifact.getId()).isEqualTo("123456");
+        assertThat(savedArtifact.getName()).isEqualTo(newArtifact.getName());
+        assertThat(savedArtifact.getDescription()).isEqualTo(newArtifact.getDescription());
+        assertThat(savedArtifact.getImageUrl()).isEqualTo(newArtifact.getImageUrl());
+        verify(artifactRepository, times(1)).save(newArtifact);
     }
 }
